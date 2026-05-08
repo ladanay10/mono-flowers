@@ -1,0 +1,17 @@
+{
+  "name": "mono-flowers",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-04-15",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "mono-flowers"
+    }
+  ],
+  "kv_namespaces": [{ "binding": "MONO_KV", "id": "f2d8f9fe50f4442d88de587727725d22" }]
+}

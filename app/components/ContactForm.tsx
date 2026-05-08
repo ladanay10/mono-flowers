@@ -21,7 +21,7 @@ const BUDGETS = [
 ]
 
 export function ContactForm() {
-  const [state, action, pending] = useActionState(submitInquiry, null)
+  const [state, formAction, isPending] = useActionState(submitInquiry, null)
 
   if (state?.ok) {
     return (
@@ -34,7 +34,7 @@ export function ContactForm() {
   }
 
   return (
-    <form className="booking-form" action={action} noValidate>
+    <form className="booking-form" action={formAction} noValidate>
       <div className="form-row">
         <div className="form-field">
           <label htmlFor="bf-name">
@@ -128,8 +128,8 @@ export function ContactForm() {
         </p>
       )}
 
-      <button type="submit" className="form-submit" disabled={pending}>
-        {pending ? 'Надсилаємо…' : 'Надіслати запит →'}
+      <button type="submit" className="form-submit" disabled={isPending}>
+        {isPending ? 'Надсилаємо…' : 'Надіслати запит →'}
       </button>
     </form>
   )

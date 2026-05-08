@@ -1,7 +1,5 @@
 'use server'
 
-import { promises as fs } from 'fs'
-import path from 'path'
 import { revalidatePath } from 'next/cache'
 
 export type InquiryStatus = 'new' | 'contacted' | 'confirmed' | 'completed'
@@ -19,19 +17,42 @@ export interface Inquiry {
   createdAt: string
 }
 
-const DATA_FILE = path.join(process.cwd(), 'data', 'inquiries.json')
+async function getKV(): Promise<KVNamespace | null> {
+  try {
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare')
+    const ctx = await getCloudflareContext({ async: true })
+    return (ctx.env as { MONO_KV?: KVNamespace }).MONO_KV ?? null
+  } catch {
+    return null
+  }
+}
 
 async function read(): Promise<Inquiry[]> {
+  const kv = await getKV()
+  if (kv) {
+    const data = await kv.get('inquiries', { type: 'json' })
+    return Array.isArray(data) ? (data as Inquiry[]) : []
+  }
+  const { promises: fs } = await import('fs')
+  const { join } = await import('path')
   try {
-    return JSON.parse(await fs.readFile(DATA_FILE, 'utf-8'))
+    return JSON.parse(await fs.readFile(join(process.cwd(), 'data', 'inquiries.json'), 'utf-8'))
   } catch {
     return []
   }
 }
 
 async function write(list: Inquiry[]): Promise<void> {
-  await fs.mkdir(path.dirname(DATA_FILE), { recursive: true })
-  await fs.writeFile(DATA_FILE, JSON.stringify(list, null, 2), 'utf-8')
+  const kv = await getKV()
+  if (kv) {
+    await kv.put('inquiries', JSON.stringify(list))
+    return
+  }
+  const { promises: fs } = await import('fs')
+  const { join, dirname } = await import('path')
+  const file = join(process.cwd(), 'data', 'inquiries.json')
+  await fs.mkdir(dirname(file), { recursive: true })
+  await fs.writeFile(file, JSON.stringify(list, null, 2), 'utf-8')
 }
 
 export async function submitInquiry(
@@ -74,11 +95,7 @@ export async function getInquiries(): Promise<Inquiry[]> {
   return read()
 }
 
-export async function setStatus(
-  id: string,
-  status: InquiryStatus,
-  _fd: FormData
-): Promise<void> {
+export async function setStatus(id: string, status: InquiryStatus): Promise<void> {
   const list = await read()
   const i = list.findIndex((x) => x.id === id)
   if (i !== -1) {
