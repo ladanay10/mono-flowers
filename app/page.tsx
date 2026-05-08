@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { ContactForm } from "@/app/components/ContactForm";
 
 const marqueeItems = [
   "Весілля",
@@ -367,28 +368,46 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="cta" id="cta">
-          <div className="cta-bg" />
-          <div className="cta-content">
-            <div className="cta-tag reveal">Ваше свято чекає</div>
-            <h2 className="cta-title reveal">
-              Готові створити
+        <section className="booking" id="cta">
+          <div className="booking-info">
+            <div className="section-tag reveal">Замовити</div>
+            <h2 className="booking-title reveal">
+              Залиште запит —
               <br />
-              <em>щось неповторне</em>
+              <em>ми зв&apos;яжемося</em>
               <br />
-              разом?
+              найближчим часом
             </h2>
-            <p className="cta-sub reveal">
-              Звʼяжіться з нами, щоб отримати безкоштовну консультацію та індивідуальну пропозицію для вашого заходу.
+            <p className="booking-desc reveal">
+              Звʼяжіться з нами для безкоштовної консультації та індивідуальної пропозиції для вашого заходу.
             </p>
-            <div className="cta-actions reveal">
-              <a href="tel:+380991234567" className="btn-large btn-large-filled">
-                Зателефонувати
+            <div className="booking-contacts reveal reveal-delay-1">
+              <a href="tel:+380680540955" className="bcontact">
+                <span className="bcontact-label">Телефон</span>
+                <span className="bcontact-val">+380 680 540 955</span>
               </a>
-              <a href="mailto:hello@monoflowers.ua" className="btn-large btn-large-ghost">
-                Написати нам
+              <a
+                href="https://www.instagram.com/mono__flowers_"
+                className="bcontact"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="bcontact-label">Instagram</span>
+                <span className="bcontact-val">@mono__flowers_</span>
               </a>
+              <div className="bcontact">
+                <span className="bcontact-label">Години роботи</span>
+                <span className="bcontact-val">09:00 – 18:00</span>
+              </div>
             </div>
+          </div>
+
+          <div className="booking-form-col">
+            <div className="booking-form-head">
+              <div className="section-tag">Форма замовлення</div>
+              <h3 className="booking-form-title">Розкажіть про вашу подію</h3>
+            </div>
+            <ContactForm />
           </div>
         </section>
       </main>
